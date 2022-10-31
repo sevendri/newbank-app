@@ -8,5 +8,6 @@ import lombok.Setter;
 public class Pessoa {
 
     private String nome;
+    private char tipo_pessoa;
 }
 
