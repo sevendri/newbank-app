@@ -1,8 +1,10 @@
 package br.com.newbank.domain.entities;
+import lombok.*;
+import java.util.UUID;
 
-public class Cliente {
+@Data
+public class Cliente extends Pessoa {
 
-    private String idCliente;
-    private Pessoa pessoa;
+    private UUID idCliente;
 
 }
