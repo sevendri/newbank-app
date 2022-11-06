@@ -4,6 +4,4 @@ public class Cliente {
     String nome;
     String conta;
     String tipo_pessoa;
-
-
 }
