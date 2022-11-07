@@ -13,7 +13,7 @@ public class Aplicacao {
 
     public static void main(String[] args) {
 
-        Scanner sc = new Scanner(System.in);
+         Scanner sc = new Scanner(System.in);
 
         System.out.println("Bem vindo ao Newbank");
         // passar infos da abertura da conta

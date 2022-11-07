@@ -34,6 +34,21 @@ public class ServicosContaImpl implements ServicosConta{
     public void depositar(Conta conta, double valor){
         Lancamento lancamento = new Lancamento("Deposito", valor, new Date());
         conta.getListaLancamentos().add(lancamento);
+
+        if(conta.getTipoConta().equals(TipoConta.POUPANCA)){
+            valor = valor + (valor * 0.001);
+        } else if (conta.getTipoConta().equals(TipoConta.INVESTIMENTO)) {
+
+            char tipoPessoa = conta.getCliente().getTipo_pessoa();
+
+            if(String.valueOf(tipoPessoa).toUpperCase().equals("F")){
+                valor = valor + (valor * 0.015);
+            }else {
+                valor = valor + (valor * 0.035);
+            }
+
+        }
+
         conta.atualizaSaldo(valor);
     }
     public boolean sacar(Conta conta, double valor){
