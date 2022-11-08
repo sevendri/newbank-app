@@ -10,4 +10,12 @@ public class ContaInvestimento extends Conta{
             return 0.015;
     }
 
+    @Override
+    public double calcularTaxa(Pessoa pessoa){
+        if (pessoa.getClass().getName().contains("PessoaJuridica"))
+            return 0.005;
+        else
+            return 0.0;
+    }
+
 }

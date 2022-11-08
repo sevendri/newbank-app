@@ -42,14 +42,14 @@ public class ServicosContaImpl implements ServicosConta{
     public void depositar(Conta conta, double valor){
         Lancamento lancamento = new Lancamento("Deposito", valor, new Date());
         conta.getListaLancamentos().add(lancamento);
-        double rendimento = conta.calcularRendimento(conta.getPessoa());
-
-        if (rendimento > 0.0) {
-            Lancamento lancamentoRendimento = new Lancamento("Rendimento Deposito", rendimento, new Date());
+        double ValorRendimento = 0;
+        if (conta.calcularRendimento(conta.getPessoa()) > 0.0) {
+            ValorRendimento = valor * conta.calcularRendimento(conta.getPessoa());
+            Lancamento lancamentoRendimento = new Lancamento("Rendimento Deposito", ValorRendimento , new Date());
             conta.getListaLancamentos().add(lancamentoRendimento);
         }
 
-        conta.atualizarSaldo(valor + rendimento);
+        conta.atualizarSaldo(valor + ValorRendimento);
     }
     public boolean sacar(Conta conta, double valor){
 
@@ -59,9 +59,11 @@ public class ServicosContaImpl implements ServicosConta{
         if((conta.getSaldo() + valorSaqueTaxa) >= 0) {
             Lancamento lancamento = new Lancamento("Saque", valor, new Date());
             conta.getListaLancamentos().add(lancamento);
-            Lancamento lancamentoTaxa = new Lancamento("Taxa Saque", taxa, new Date());
-            conta.getListaLancamentos().add(lancamentoTaxa);
-            conta.atualizarSaldo(valor + taxa);
+            if (taxa > 0.0){
+                Lancamento lancamentoTaxa = new Lancamento("Taxa Saque", (valor * taxa), new Date());
+                conta.getListaLancamentos().add(lancamentoTaxa);
+            }
+            conta.atualizarSaldo(valorSaqueTaxa);
             return true;
         }
         return false;
@@ -74,9 +76,11 @@ public class ServicosContaImpl implements ServicosConta{
         if((conta.getSaldo() + valorTransferenciaTaxa) >= 0) {
             Lancamento lancamento = new Lancamento("Transferencia", valor, new Date());
             conta.getListaLancamentos().add(lancamento);
-            Lancamento lancamentoTaxa = new Lancamento("Taxa Transferencia", taxa, new Date());
-            conta.getListaLancamentos().add(lancamentoTaxa);
-            conta.atualizarSaldo(valor + taxa);
+            if (taxa > 0.0) {
+                Lancamento lancamentoTaxa = new Lancamento("Taxa Transferencia", (valor * taxa), new Date());
+                conta.getListaLancamentos().add(lancamentoTaxa);
+            }
+            conta.atualizarSaldo(valorTransferenciaTaxa);
             return true;
         }
         return false;
@@ -84,13 +88,22 @@ public class ServicosContaImpl implements ServicosConta{
     public void investir(Conta conta, double valor) {
         Lancamento lancamento = new Lancamento("Investimento", valor, new Date());
         conta.getListaLancamentos().add(lancamento);
-        double rendimento = conta.calcularRendimento(conta.getPessoa());
-
-        if (rendimento > 0.0) {
-            Lancamento lancamentoRendimento = new Lancamento("Rendimento Investimento", rendimento, new Date());
+        double ValorRendimento = 0;
+        if (conta.calcularRendimento(conta.getPessoa()) > 0.0) {
+            ValorRendimento = valor * conta.calcularRendimento(conta.getPessoa());
+            Lancamento lancamentoRendimento = new Lancamento("Rendimento Investimento", ValorRendimento, new Date());
             conta.getListaLancamentos().add(lancamentoRendimento);
         }
-        conta.atualizarSaldo(valor + rendimento);
+        conta.atualizarSaldo(valor + ValorRendimento);
     }
+
+    public String listarLancamentos(Conta conta) {
+        String lancamento = "";
+        for (int i = 0; i < conta.getListaLancamentos().size(); i++){
+            lancamento = lancamento + "\n Lançamento de " + conta.getListaLancamentos().get(i).getNome() + " - Valor: " + conta.getListaLancamentos().get(i).getValor();
+        }
+        return lancamento;
+    }
+
 
 }

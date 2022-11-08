@@ -14,6 +14,7 @@ public interface ServicosConta {
     public boolean sacar(Conta conta, double valor);
     public boolean transferir(Conta conta, double valor, UUID  id_conta_tranferencia);
     public void investir(Conta conta, double valor);
+    public String listarLancamentos(Conta conta);
 
 
 }

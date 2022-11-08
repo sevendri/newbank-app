@@ -87,19 +87,19 @@ public class Aplicacao {
         int operacao = 0;
         // mensagem pra escolher operacoes da conta
 
-        while (operacao != 6){
+        while (operacao != 7){
             //operacoes na conta
 
             boolean validaEntradaTipoOperacao = false;
 
             while (!validaEntradaTipoOperacao){
 
-                System.out.println("Digite o numero da operação abaixo: \n 1 - DEPOSITO \n 2 - SAQUE \n 3 - INVESTIMENTO \n 4 - SALDO \n 5 - TRANSFERIR \n 6 - SAIR");
+                System.out.println("Digite o numero da operação abaixo: \n 1 - DEPOSITO \n 2 - SAQUE \n 3 - INVESTIMENTO \n 4 - SALDO \n 5 - TRANSFERIR \n 6 - LISTAR LANCAMENTOS \n 7 - SAIR");
 
                 try {
                     operacao = Integer.parseInt(sc.nextLine());
 
-                    if(validarEntrada(String.valueOf(operacao), new String[]{"1", "2", "3", "4", "5", "6"})){
+                    if(validarEntrada(String.valueOf(operacao), new String[]{"1", "2", "3", "4", "5", "6", "7"})){
                         validaEntradaTipoOperacao = true;
                     }
 
@@ -195,8 +195,12 @@ public class Aplicacao {
 
                     System.out.println("Saldo atual: " + conta.getSaldo());
                     break;
+                case 6: // LANCAMENTOS
+                    System.out.println("Lançamentos: \n"  + servicosConta.listarLancamentos(conta));
+                    break;
+
                 default:
-                    operacao = 6;
+                    operacao = 7;
             }
         }
     }
