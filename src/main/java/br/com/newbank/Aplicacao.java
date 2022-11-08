@@ -2,6 +2,7 @@ package br.com.newbank;
 
 import br.com.newbank.domain.entities.Conta;
 import br.com.newbank.domain.enuns.TipoConta;
+import br.com.newbank.domain.enuns.TipoPessoa;
 import br.com.newbank.services.ServicosConta;
 import br.com.newbank.services.ServicosContaImpl;
 
@@ -24,14 +25,14 @@ public class Aplicacao {
         String endereco = sc.nextLine();
 
         boolean validaEntradaTipoPessoa = false;
-        char tipo_pessoa = '0';
+        int tipo_pessoa = 0;
 
         while (!validaEntradaTipoPessoa){
-            System.out.println("Digite: F - Pessoa Fisica ou J - Pessoa Juridica:");
-            tipo_pessoa = sc.nextLine().toUpperCase().charAt(0);
+            System.out.println("Digite o numero da opção escolhida: : \n 1 - Pessoa Fisica \n 2 - Pessoa Juridica");
+            tipo_pessoa = Integer.parseInt(sc.nextLine());
 
             try {
-                if(validarEntrada(String.valueOf(tipo_pessoa), new String[] {"F", "J"})){
+                if(validarEntrada(String.valueOf(tipo_pessoa), new String[] {"1", "2"})){
                     validaEntradaTipoPessoa = true;
                 }
             }catch (Exception exception){
@@ -41,28 +42,28 @@ public class Aplicacao {
 
         }
 
+        TipoPessoa tipoPessoa;
+        if (tipo_pessoa == 1)
+            tipoPessoa = TipoPessoa.FISICA;
+       else
+            tipoPessoa = TipoPessoa.JURIDICA;
 
-        boolean valida = true;
+
+        boolean valida = false;
 
         int tipo_conta = 0;
-        while (valida) {
-            System.out.println("Digite: 1 - Conta Corrente, Digite: 2 - Conta Poupanca, Digite: 3 - Conta Investimento");
+        while (!valida) {
+            System.out.println("Digite o numero da opção escolhida:  \n 1 - Conta Corrente \n 2 - Conta Poupanca \n 3 - Conta Investimento");
 
             try {
 
                 tipo_conta = Integer.parseInt(sc.nextLine());
-
                 if(validarEntrada(String.valueOf(tipo_conta), new String[]{"1", "2", "3"})){
 
-                    if ((tipo_conta == 1 && tipo_pessoa !='F')) {
+                    if ((tipo_conta == 2 && tipoPessoa.getTipo_conta() == 2))
                         System.out.println("Tipo de conta inválida pra pessoa Juridica");
-                    }
-                    else {
-                        if (tipo_conta == 1 || tipo_conta == 2 || tipo_conta == 3) {
-                            valida = false;
-                        }
-                    }
-
+                    else
+                       valida = true;
                 }
 
             }catch (Exception exception){
@@ -80,9 +81,8 @@ public class Aplicacao {
 
 
         ServicosConta servicosConta = new ServicosContaImpl();
-        //ajustar enun
-        Conta conta = servicosConta.abrirConta(nome, endereco, tipo_pessoa, tipoConta);
-        System.out.println("Conta aberta : " + conta.getIdConta());
+        Conta conta = servicosConta.abrirConta(nome, endereco, tipoPessoa, tipoConta);
+        System.out.println("Conta aberta : " + conta.toString());
 
         int operacao = 0;
         // mensagem pra escolher operacoes da conta
@@ -94,7 +94,7 @@ public class Aplicacao {
 
             while (!validaEntradaTipoOperacao){
 
-                System.out.println("Digite: 1 - DEPOSITO, Digite: 2 - SAQUE, Digite: 3 - INVESTIMENTO, Digite: 4 - SALDO, Digite: 5 - TRANSFERIR,  Digite: 6 - SAIR");
+                System.out.println("Digite o numero da operação abaixo: \n 1 - DEPOSITO \n 2 - SAQUE \n 3 - INVESTIMENTO \n 4 - SALDO \n 5 - TRANSFERIR \n 6 - SAIR");
 
                 try {
                     operacao = Integer.parseInt(sc.nextLine());
@@ -142,7 +142,7 @@ public class Aplicacao {
                             System.out.println("Digite o valor do SAQUE: ");
                             valor = (Double.parseDouble(sc.nextLine())) * -1;
                             if(servicosConta.sacar(conta, valor)){
-                                System.out.println("Saldo efetuado");
+                                System.out.println("Saque efetuado");
                             }else{
                                 System.out.println("Sem saldo pro saque");
                             }

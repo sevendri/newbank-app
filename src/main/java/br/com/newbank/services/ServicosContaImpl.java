@@ -2,28 +2,36 @@ package br.com.newbank.services;
 
 import br.com.newbank.domain.entities.*;
 import br.com.newbank.domain.enuns.TipoConta;
+import br.com.newbank.domain.enuns.TipoPessoa;
 
 import java.util.Date;
 import java.util.UUID;
 
 public class ServicosContaImpl implements ServicosConta{
 
-    public Conta abrirConta( String nome, String endereco, char tipo_pessoa,  TipoConta tipo_conta){
-        Cliente cliente = new Cliente();
-        cliente.setIdCliente(UUID.randomUUID());
-        cliente.setNome(nome);
-        cliente.setEndereco(endereco);
-        cliente.setTipo_pessoa(tipo_pessoa);
-        Conta conta = new Conta();
+    public Conta abrirConta(String nome, String endereco, TipoPessoa tipo_pessoa, TipoConta tipo_conta){
+        Pessoa pessoa;
+        Conta conta;
+
+        if (tipo_pessoa.equals(TipoPessoa.FISICA))
+            pessoa = new PessoaFisica();
+        else
+            pessoa = new PessoaJuridica();
+
+        pessoa.setIdCliente(UUID.randomUUID());
+        pessoa.setNome(nome);
+        pessoa.setEndereco(endereco);
+
         if (tipo_conta.equals(TipoConta.CORRENTE)) {
-            conta.setTipoConta(TipoConta.CORRENTE);
+            conta = new ContaCorrente();
         }else if(tipo_conta.equals(TipoConta.POUPANCA)) {
-             conta.setTipoConta(TipoConta.POUPANCA);
+            conta = new ContaPoupanca();
         }else {
-             conta.setTipoConta(TipoConta.INVESTIMENTO);
+             conta = new ContaInvestimento();
         }
+
         conta.setIdConta(UUID.randomUUID());
-        conta.setCliente(cliente);
+        conta.setPessoa(pessoa);
         return conta;
     }
 
@@ -34,60 +42,55 @@ public class ServicosContaImpl implements ServicosConta{
     public void depositar(Conta conta, double valor){
         Lancamento lancamento = new Lancamento("Deposito", valor, new Date());
         conta.getListaLancamentos().add(lancamento);
+        double rendimento = conta.calcularRendimento(conta.getPessoa());
 
-        if(conta.getTipoConta().equals(TipoConta.POUPANCA)){
-            valor = valor + (valor * 0.001);
-        } else if (conta.getTipoConta().equals(TipoConta.INVESTIMENTO)) {
-
-            char tipoPessoa = conta.getCliente().getTipo_pessoa();
-
-            if(String.valueOf(tipoPessoa).toUpperCase().equals("F")){
-                valor = valor + (valor * 0.015);
-            }else {
-                valor = valor + (valor * 0.035);
-            }
-
+        if (rendimento > 0.0) {
+            Lancamento lancamentoRendimento = new Lancamento("Rendimento Deposito", rendimento, new Date());
+            conta.getListaLancamentos().add(lancamentoRendimento);
         }
 
-        conta.atualizaSaldo(valor);
+        conta.atualizarSaldo(valor + rendimento);
     }
     public boolean sacar(Conta conta, double valor){
-        if (conta.getCliente().getTipo_pessoa() == 'J')
-            valor = valor + (valor * 0.005);
 
-        if((conta.getSaldo() + valor) >= 0) {
+        double taxa = conta.calcularTaxa(conta.getPessoa());
+        double valorSaqueTaxa = valor + (valor * taxa);
+
+        if((conta.getSaldo() + valorSaqueTaxa) >= 0) {
             Lancamento lancamento = new Lancamento("Saque", valor, new Date());
             conta.getListaLancamentos().add(lancamento);
-            conta.atualizaSaldo(valor);
+            Lancamento lancamentoTaxa = new Lancamento("Taxa Saque", taxa, new Date());
+            conta.getListaLancamentos().add(lancamentoTaxa);
+            conta.atualizarSaldo(valor + taxa);
             return true;
         }
         return false;
     }
 
     public boolean transferir(Conta conta, double valor, UUID id_conta_tranferencia){
-        if (conta.getCliente().getTipo_pessoa() == 'J')
-            valor = valor + (valor * 0.005);
+        double taxa = conta.calcularTaxa(conta.getPessoa());
+        double valorTransferenciaTaxa = valor + (valor * taxa);
 
-        if((conta.getSaldo() + valor) >= 0) {
-            Lancamento lancamento = new Lancamento("Transferência", valor, new Date());
+        if((conta.getSaldo() + valorTransferenciaTaxa) >= 0) {
+            Lancamento lancamento = new Lancamento("Transferencia", valor, new Date());
             conta.getListaLancamentos().add(lancamento);
-            conta.atualizaSaldo(valor);
+            Lancamento lancamentoTaxa = new Lancamento("Taxa Transferencia", taxa, new Date());
+            conta.getListaLancamentos().add(lancamentoTaxa);
+            conta.atualizarSaldo(valor + taxa);
             return true;
         }
         return false;
     }
-    public void investir(Conta conta, double valor){
-        if (conta.getCliente().getTipo_pessoa() == 'F' && conta.getTipoConta().equals(TipoConta.INVESTIMENTO))
-            valor = valor + (valor * 0.015);
-        else if  (conta.getCliente().getTipo_pessoa() == 'F' && conta.getTipoConta().equals(TipoConta.POUPANCA))
-            valor = valor + (valor * 0.01);
-        else if (conta.getCliente().getTipo_pessoa() == 'J' && conta.getTipoConta().equals(TipoConta.INVESTIMENTO))
-            valor = valor + (valor * 0.035);
-
+    public void investir(Conta conta, double valor) {
         Lancamento lancamento = new Lancamento("Investimento", valor, new Date());
         conta.getListaLancamentos().add(lancamento);
-        conta.atualizaSaldo(valor);
-    }
+        double rendimento = conta.calcularRendimento(conta.getPessoa());
 
+        if (rendimento > 0.0) {
+            Lancamento lancamentoRendimento = new Lancamento("Rendimento Investimento", rendimento, new Date());
+            conta.getListaLancamentos().add(lancamentoRendimento);
+        }
+        conta.atualizarSaldo(valor + rendimento);
+    }
 
 }

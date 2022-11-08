@@ -1,28 +1,28 @@
 package br.com.newbank.domain.entities;
-import br.com.newbank.domain.enuns.TipoConta;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Data
-public class Conta {
+public abstract class Conta {
 
     private UUID idConta;
-    private Cliente cliente;
-    private TipoConta tipoConta;
+    private Pessoa pessoa;
     private double saldo;
     private ArrayList<Lancamento> listaLancamentos  = new ArrayList<Lancamento>();
 
-    public double calcularInvestimento(double valorDeposito, double rendimento){
-        return valorDeposito * rendimento;
+    public double calcularRendimento(Pessoa pessoa){
+        return 0.0;
     }
 
-    public double atualizaSaldo(double valor){
+    public double atualizarSaldo(double valor){
         saldo = saldo + valor;
         return saldo;
+    }
+
+    public double calcularTaxa(Pessoa pessoa){
+        return 0.0;
     }
 
 }

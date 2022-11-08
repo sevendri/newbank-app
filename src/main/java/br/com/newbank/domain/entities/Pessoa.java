@@ -1,12 +1,15 @@
 package br.com.newbank.domain.entities;
 import lombok.*;
 
+import java.util.UUID;
+
 
 @Data
-public class  Pessoa {
+public abstract class  Pessoa {
 
+    private UUID idCliente;
     private String nome;
     private String endereco;
-    private char tipo_pessoa;
+
 }
 
