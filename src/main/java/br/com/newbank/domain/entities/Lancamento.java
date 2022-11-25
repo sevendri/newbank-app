@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 public class Lancamento {
 
     private String nome;
-    private double valor;
-    private Date date;
+    private BigDecimal valor;
+    private LocalDateTime date;
 }

@@ -3,7 +3,6 @@ import lombok.*;
 
 import java.util.UUID;
 
-
 @Data
 public abstract class  Pessoa {
 

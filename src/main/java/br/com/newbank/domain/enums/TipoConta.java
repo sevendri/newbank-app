@@ -1,4 +1,4 @@
-package br.com.newbank.domain.enuns;
+package br.com.newbank.domain.enums;
 
 public enum TipoConta {
     CORRENTE(1),

@@ -1,6 +1,7 @@
 package br.com.newbank.domain.entities;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -9,20 +10,23 @@ public abstract class Conta {
 
     private UUID idConta;
     private Pessoa pessoa;
-    private double saldo;
+    private BigDecimal saldo;
     private ArrayList<Lancamento> listaLancamentos  = new ArrayList<Lancamento>();
 
-    public double calcularRendimento(Pessoa pessoa){
-        return 0.0;
+    public BigDecimal calcularRendimento(Pessoa pessoa){
+        return new BigDecimal(0);
     }
 
-    public double atualizarSaldo(double valor){
-        saldo = saldo + valor;
+    public BigDecimal atualizarSaldo(BigDecimal valor){
+        if (this.saldo==null) {
+            this.saldo = new BigDecimal(0);
+        }
+        saldo = saldo.add(valor);
         return saldo;
     }
 
-    public double calcularTaxa(Pessoa pessoa){
-        return 0.0;
+    public BigDecimal calcularTaxa(Pessoa pessoa){
+        return new BigDecimal(0.0);
     }
 
 }

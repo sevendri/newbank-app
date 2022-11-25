@@ -1,10 +1,11 @@
 package br.com.newbank.services;
 
 import br.com.newbank.domain.entities.*;
-import br.com.newbank.domain.enuns.TipoConta;
-import br.com.newbank.domain.enuns.TipoPessoa;
+import br.com.newbank.domain.enums.TipoConta;
+import br.com.newbank.domain.enums.TipoPessoa;
 
-import java.util.Date;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class ServicosContaImpl implements ServicosConta{
@@ -35,32 +36,34 @@ public class ServicosContaImpl implements ServicosConta{
         return conta;
     }
 
-    public double consultarSaldo(Conta conta) {
+    public BigDecimal consultarSaldo(Conta conta) {
         return conta.getSaldo();
     }
 
-    public void depositar(Conta conta, double valor){
-        Lancamento lancamento = new Lancamento("Deposito", valor, new Date());
+    public void depositar(Conta conta, BigDecimal valor){
+        LocalDateTime ldt = LocalDateTime.now();
+        Lancamento lancamento = new Lancamento("Deposito", valor, ldt);
         conta.getListaLancamentos().add(lancamento);
-        double ValorRendimento = 0;
-        if (conta.calcularRendimento(conta.getPessoa()) > 0.0) {
-            ValorRendimento = valor * conta.calcularRendimento(conta.getPessoa());
-            Lancamento lancamentoRendimento = new Lancamento("Rendimento Deposito", ValorRendimento , new Date());
+        BigDecimal ValorRendimento = new BigDecimal(0);
+        if (conta.calcularRendimento(conta.getPessoa()).compareTo(new BigDecimal(0)) > 0) {
+            ValorRendimento = valor.multiply(conta.calcularRendimento(conta.getPessoa()));
+            Lancamento lancamentoRendimento = new Lancamento("Rendimento Deposito", ValorRendimento , ldt);
             conta.getListaLancamentos().add(lancamentoRendimento);
         }
 
-        conta.atualizarSaldo(valor + ValorRendimento);
+        conta.atualizarSaldo(valor.add(ValorRendimento));
     }
-    public boolean sacar(Conta conta, double valor){
+    public boolean sacar(Conta conta, BigDecimal valor){
 
-        double taxa = conta.calcularTaxa(conta.getPessoa());
-        double valorSaqueTaxa = valor + (valor * taxa);
+        BigDecimal taxa = conta.calcularTaxa(conta.getPessoa());
+        BigDecimal valorSaqueTaxa = valor.add(valor.multiply(taxa));
 
-        if((conta.getSaldo() + valorSaqueTaxa) >= 0) {
-            Lancamento lancamento = new Lancamento("Saque", valor, new Date());
+        if((conta.getSaldo().add(valorSaqueTaxa).compareTo(new BigDecimal(0)) >= 0)) {
+            LocalDateTime ldt = LocalDateTime.now();
+            Lancamento lancamento = new Lancamento("Saque", valor, ldt);
             conta.getListaLancamentos().add(lancamento);
-            if (taxa > 0.0){
-                Lancamento lancamentoTaxa = new Lancamento("Taxa Saque", (valor * taxa), new Date());
+            if (taxa.compareTo(new BigDecimal(0)) > 0.0){
+                Lancamento lancamentoTaxa = new Lancamento("Taxa Saque", (valor.multiply(taxa)), ldt);
                 conta.getListaLancamentos().add(lancamentoTaxa);
             }
             conta.atualizarSaldo(valorSaqueTaxa);
@@ -69,15 +72,16 @@ public class ServicosContaImpl implements ServicosConta{
         return false;
     }
 
-    public boolean transferir(Conta conta, double valor, UUID id_conta_tranferencia){
-        double taxa = conta.calcularTaxa(conta.getPessoa());
-        double valorTransferenciaTaxa = valor + (valor * taxa);
+    public boolean transferir(Conta conta, BigDecimal valor, UUID id_conta_tranferencia){
+        BigDecimal taxa = conta.calcularTaxa(conta.getPessoa());
+        BigDecimal valorTransferenciaTaxa = valor.add(valor.multiply(taxa));
 
-        if((conta.getSaldo() + valorTransferenciaTaxa) >= 0) {
-            Lancamento lancamento = new Lancamento("Transferencia", valor, new Date());
+        if((conta.getSaldo().add(valorTransferenciaTaxa).compareTo(new BigDecimal(0))) >= 0) {
+            LocalDateTime ldt = LocalDateTime.now();
+            Lancamento lancamento = new Lancamento("Transferencia", valor, ldt);
             conta.getListaLancamentos().add(lancamento);
-            if (taxa > 0.0) {
-                Lancamento lancamentoTaxa = new Lancamento("Taxa Transferencia", (valor * taxa), new Date());
+            if (taxa.compareTo(new BigDecimal(0)) > 0.0) {
+                Lancamento lancamentoTaxa = new Lancamento("Taxa Transferencia", (valor.multiply(taxa)), ldt);
                 conta.getListaLancamentos().add(lancamentoTaxa);
             }
             conta.atualizarSaldo(valorTransferenciaTaxa);
@@ -85,16 +89,17 @@ public class ServicosContaImpl implements ServicosConta{
         }
         return false;
     }
-    public void investir(Conta conta, double valor) {
-        Lancamento lancamento = new Lancamento("Investimento", valor, new Date());
+    public void investir(Conta conta, BigDecimal valor) {
+        LocalDateTime ldt = LocalDateTime.now();
+        Lancamento lancamento = new Lancamento("Investimento", valor, ldt);
         conta.getListaLancamentos().add(lancamento);
-        double ValorRendimento = 0;
-        if (conta.calcularRendimento(conta.getPessoa()) > 0.0) {
-            ValorRendimento = valor * conta.calcularRendimento(conta.getPessoa());
-            Lancamento lancamentoRendimento = new Lancamento("Rendimento Investimento", ValorRendimento, new Date());
+        BigDecimal ValorRendimento = new BigDecimal(0);
+        if (conta.calcularRendimento(conta.getPessoa()).compareTo(new BigDecimal(0)) > 0.0) {
+            ValorRendimento = valor.multiply(conta.calcularRendimento(conta.getPessoa()));
+            Lancamento lancamentoRendimento = new Lancamento("Rendimento Investimento", ValorRendimento, ldt);
             conta.getListaLancamentos().add(lancamentoRendimento);
         }
-        conta.atualizarSaldo(valor + ValorRendimento);
+        conta.atualizarSaldo(valor.add(ValorRendimento));
     }
 
     public String listarLancamentos(Conta conta) {
