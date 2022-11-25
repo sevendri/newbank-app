@@ -1,12 +1,14 @@
 package br.com.newbank.domain.entities;
 
+import java.math.BigDecimal;
+
 public class ContaCorrente extends Conta{
 
     @Override
-    public double calcularTaxa(Pessoa pessoa){
+    public BigDecimal calcularTaxa(Pessoa pessoa){
         if (pessoa.getClass().getName().contains("PessoaJuridica"))
-            return 0.005;
+            return new BigDecimal(0.005);
         else
-            return 0.0;
+            return new BigDecimal(0.0);
     }
 }

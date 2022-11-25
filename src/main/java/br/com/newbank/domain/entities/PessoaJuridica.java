@@ -1,6 +1,8 @@
 package br.com.newbank.domain.entities;
 
-public class PessoaJuridica extends Pessoa{
+import lombok.Data;
 
+@Data
+public class PessoaJuridica extends Pessoa{
     private String cnpj;
 }

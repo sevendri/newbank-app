@@ -1,11 +1,12 @@
 package br.com.newbank;
 
 import br.com.newbank.domain.entities.Conta;
-import br.com.newbank.domain.enuns.TipoConta;
-import br.com.newbank.domain.enuns.TipoPessoa;
+import br.com.newbank.domain.enums.TipoConta;
+import br.com.newbank.domain.enums.TipoPessoa;
 import br.com.newbank.services.ServicosConta;
 import br.com.newbank.services.ServicosContaImpl;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.UUID;
@@ -67,7 +68,7 @@ public class Aplicacao {
                 }
 
             }catch (Exception exception){
-                System.out.println("O valor informado precisa ser numérico \nTente novamente...");
+                System.out.println("[a]O valor informado precisa ser numérico \nTente novamente...");
             }
         }
 
@@ -104,14 +105,13 @@ public class Aplicacao {
                     }
 
                 }catch (Exception exception){
-                    System.out.println("O valor informado precisa ser numérico \nTente novamente...");
+                    System.out.println("[b]O valor informado precisa ser numérico \nTente novamente...");
                 }
 
             }
 
-            double valor;
+            BigDecimal valor;
             boolean validaValorOperacao = false;
-
 
             switch(operacao) {
                 case 1:  //DEPOSITO
@@ -120,13 +120,14 @@ public class Aplicacao {
 
                         try {
                             System.out.println("Digite o valor do DEPOSITO: ");
-                            valor = Double.parseDouble(sc.nextLine());
+                            valor = new BigDecimal(sc.nextLine());
                             servicosConta.depositar(conta, valor);
 
                             validaValorOperacao = true;
 
                         }catch (Exception exception){
-                            System.out.println("O valor informado precisa ser numérico \nTente novamente...");
+                            System.out.println("[c]O valor informado precisa ser numérico \nTente novamente...");
+                            System.out.println(exception);
                         }
 
                     }
@@ -140,7 +141,8 @@ public class Aplicacao {
 
                         try {
                             System.out.println("Digite o valor do SAQUE: ");
-                            valor = (Double.parseDouble(sc.nextLine())) * -1;
+                            valor = new BigDecimal(sc.nextLine());
+                            valor = valor.multiply(new BigDecimal(-1));
                             if(servicosConta.sacar(conta, valor)){
                                 System.out.println("Saque efetuado");
                             }else{
@@ -150,7 +152,7 @@ public class Aplicacao {
                             validaValorOperacao = true;
 
                         }catch (Exception exception){
-                            System.out.println("O valor informado precisa ser numérico \nTente novamente...");
+                            System.out.println("[d]O valor informado precisa ser numérico \nTente novamente...");
                         }
 
                     }
@@ -160,7 +162,7 @@ public class Aplicacao {
 
                 case 3: // INVESTIR
                     System.out.println("Digite o valor do INVESTIMENTO: ");
-                    valor = Double.parseDouble(sc.nextLine());
+                    valor = new BigDecimal(sc.nextLine());
                     servicosConta.investir(conta, valor);
                     System.out.println("Investimento efetuado");
                     System.out.println("Saldo atual: " + conta.getSaldo());
@@ -176,7 +178,8 @@ public class Aplicacao {
 
                         try {
                             System.out.println("Digite o valor do TRANSFERENCIA: ");
-                            valor = (Double.parseDouble(sc.nextLine())) * -1;
+                            valor = new BigDecimal(sc.nextLine());
+                            valor = valor.multiply(new BigDecimal(-1));
                             System.out.println("Digite o ID da conta para TRANSFERENCIA: ");
                             UUID id_conta = UUID.fromString(sc.nextLine());
                             if(servicosConta.transferir(conta, valor, id_conta)){
@@ -188,7 +191,7 @@ public class Aplicacao {
                             validaValorOperacao = true;
 
                         }catch (Exception exception){
-                            System.out.println("O valor informado precisa ser numérico \nTente novamente...");
+                            System.out.println("[e]O valor informado precisa ser numérico \nTente novamente...");
                         }
 
                     }
