@@ -16,3 +16,5 @@ O mesmo vale para as outras entidades, elas devem possuir apenas atributos.
 A interface ServicoConta e respectivamente a implementacao ServicosContaImpl ficaram muito grandes
 (elas sabem demais) seria interessante criar varias classes/interfaces com métodos unicos.
 Cada classe teria uma unica responsabilidade.
+
+fabi: teste do Almir
