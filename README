@@ -1,0 +1,18 @@
+Serão avaliados os seguintes quesitos:
+
+Completude das funcionalidades
+Aplicação das regras de negócio
+Modelagem de domínio orientado a objetos
+Aplicação de encapsulamento
+Abstração e polimorfismo
+** Uso de Interfaces, Generics, SOLID e Qualidade do codigo **
+
+
+Melhorias:
+
+A entidade Conta deveria ter apenas atributos.
+As operacoes deveriam estar em classes Services.
+O mesmo vale para as outras entidades, elas devem possuir apenas atributos.
+A interface ServicoConta e respectivamente a implementacao ServicosContaImpl ficaram muito grandes
+(elas sabem demais) seria interessante criar varias classes/interfaces com métodos unicos.
+Cada classe teria uma unica responsabilidade.

@@ -1,21 +1,26 @@
 package br.com.newbank;
 
 import br.com.newbank.domain.entities.Conta;
+import br.com.newbank.domain.entities.Pessoa;
 import br.com.newbank.domain.enums.TipoConta;
 import br.com.newbank.domain.enums.TipoPessoa;
+import br.com.newbank.services.MovimentarContaService;
 import br.com.newbank.services.ServicosConta;
-import br.com.newbank.services.ServicosContaImpl;
+import br.com.newbank.services.TransferirService;
+import br.com.newbank.services.impl.MovimentarContaServiceImpl;
+import br.com.newbank.services.impl.ServicosContaImpl;
+import br.com.newbank.services.impl.TransferirServiceImpl;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.UUID;
 
-public class Aplicacao {
+public class NewBankApplication {
 
     public static void main(String[] args) {
 
-         Scanner sc = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
 
         System.out.println("Bem vindo ao Newbank");
         // passar infos da abertura da conta
@@ -82,7 +87,11 @@ public class Aplicacao {
 
 
         ServicosConta servicosConta = new ServicosContaImpl();
+        TransferirService transferirService = new TransferirServiceImpl();
+        MovimentarContaService movimentarContaService = new MovimentarContaServiceImpl();
         Conta conta = servicosConta.abrirConta(nome, endereco, tipoPessoa, tipoConta);
+        conta.setTaxa(movimentarContaService.calcularTaxa(conta, tipoPessoa));
+        conta.setTaxaRendimento(movimentarContaService.calcularRendimento(conta, tipoPessoa));
         System.out.println("Conta aberta : " + conta.toString());
 
         int operacao = 0;
@@ -182,7 +191,7 @@ public class Aplicacao {
                             valor = valor.multiply(new BigDecimal(-1));
                             System.out.println("Digite o ID da conta para TRANSFERENCIA: ");
                             UUID id_conta = UUID.fromString(sc.nextLine());
-                            if(servicosConta.transferir(conta, valor, id_conta)){
+                            if(transferirService.transferir(conta, valor, id_conta)){
                                 System.out.println("Saldo efetuado");
                             }else{
                                 System.out.println("Sem saldo pro saque");
