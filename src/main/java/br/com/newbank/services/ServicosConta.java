@@ -13,7 +13,6 @@ public interface ServicosConta {
     public BigDecimal consultarSaldo(Conta conta);
     public void depositar(Conta conta, BigDecimal valor);
     public boolean sacar(Conta conta, BigDecimal valor);
-    public boolean transferir(Conta conta, BigDecimal valor, UUID  id_conta_tranferencia);
     public void investir(Conta conta, BigDecimal valor);
     public String listarLancamentos(Conta conta);
 

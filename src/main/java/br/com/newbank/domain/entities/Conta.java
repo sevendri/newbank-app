@@ -12,21 +12,6 @@ public abstract class Conta {
     private Pessoa pessoa;
     private BigDecimal saldo;
     private ArrayList<Lancamento> listaLancamentos  = new ArrayList<Lancamento>();
-
-    public BigDecimal calcularRendimento(Pessoa pessoa){
-        return new BigDecimal(0);
-    }
-
-    public BigDecimal atualizarSaldo(BigDecimal valor){
-        if (this.saldo==null) {
-            this.saldo = new BigDecimal(0);
-        }
-        saldo = saldo.add(valor);
-        return saldo;
-    }
-
-    public BigDecimal calcularTaxa(Pessoa pessoa){
-        return new BigDecimal(0.0);
-    }
-
+    private BigDecimal taxa;
+    private BigDecimal taxaRendimento;
 }
