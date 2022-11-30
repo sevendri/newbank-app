@@ -14,4 +14,5 @@ public abstract class Conta {
     private ArrayList<Lancamento> listaLancamentos  = new ArrayList<Lancamento>();
     private BigDecimal taxa;
     private BigDecimal taxaRendimento;
+
 }

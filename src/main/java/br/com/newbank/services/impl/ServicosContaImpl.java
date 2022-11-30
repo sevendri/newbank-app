@@ -35,6 +35,7 @@ public class ServicosContaImpl implements ServicosConta {
         conta.setIdConta(UUID.randomUUID());
         conta.setPessoa(pessoa);
         conta.setSaldo(new BigDecimal(0));
+
         return conta;
     }
 
@@ -46,13 +47,13 @@ public class ServicosContaImpl implements ServicosConta {
         LocalDateTime ldt = LocalDateTime.now();
         Lancamento lancamento = new Lancamento("Deposito", valor, ldt);
         conta.getListaLancamentos().add(lancamento);
-        BigDecimal ValorRendimento = new BigDecimal(0);
-        if (conta.getTaxaRendimento().compareTo(new BigDecimal(0.00)) > 0) {
+        BigDecimal ValorRendimento = new BigDecimal("0.00");
+        if (conta.getTaxaRendimento().compareTo(new BigDecimal("0.00")) > 0) {
             ValorRendimento = valor.multiply(conta.getTaxaRendimento());
             Lancamento lancamentoRendimento = new Lancamento("Rendimento Deposito", ValorRendimento , ldt);
             conta.getListaLancamentos().add(lancamentoRendimento);
         }
-        conta.setSaldo(conta.getSaldo().add(ValorRendimento));
+        conta.setSaldo(conta.getSaldo().add(ValorRendimento.add(valor)));
     }
     public boolean sacar(Conta conta, BigDecimal valor){
 
@@ -100,7 +101,8 @@ public class ServicosContaImpl implements ServicosConta {
             Lancamento lancamentoRendimento = new Lancamento("Rendimento Investimento", ValorRendimento, ldt);
             conta.getListaLancamentos().add(lancamentoRendimento);
         }
-        conta.setSaldo(conta.getSaldo().add(ValorRendimento));
+
+        conta.setSaldo(conta.getSaldo().add(ValorRendimento.add(valor)));
     }
 
     public String listarLancamentos(Conta conta) {

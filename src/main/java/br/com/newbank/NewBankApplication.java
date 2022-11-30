@@ -209,6 +209,7 @@ public class NewBankApplication {
                     break;
                 case 6: // LANCAMENTOS
                     System.out.println("Lançamentos: \n"  + servicosConta.listarLancamentos(conta));
+                    System.out.println(" Saldo atual: "  + conta.getSaldo() + "\n");
                     break;
 
                 default:
