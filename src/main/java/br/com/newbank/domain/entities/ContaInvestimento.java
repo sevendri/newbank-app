@@ -1,15 +1,12 @@
 package br.com.newbank.domain.entities;
 
+import br.com.newbank.domain.entities.perfil.Corrente;
+import br.com.newbank.domain.entities.perfil.Investimento;
+import lombok.Data;
+
 import java.math.BigDecimal;
 
-public class ContaInvestimento extends Conta{
+public class ContaInvestimento extends Conta<Investimento, Pessoa>{
 
- //   @Override
-//    public BigDecimal calcularRendimento(Pessoa pessoa){
-//        if (pessoa.getClass().getName().contains("PessoaJuridica"))
- //           return new BigDecimal(0.035);
- //       else
- //           return new BigDecimal(0.015);
- //   }
 
 }

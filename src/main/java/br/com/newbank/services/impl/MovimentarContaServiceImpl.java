@@ -10,28 +10,25 @@ public class MovimentarContaServiceImpl implements MovimentarContaService {
 
     public BigDecimal calcularRendimento(Conta conta, TipoPessoa tipoPessoa){
 
-        return new BigDecimal(0.2);
+        if (tipoPessoa == TipoPessoa.JURIDICA) {
+            return new BigDecimal("0.035");
+        } else {
+            if (conta instanceof ContaCorrente) {
+                return new BigDecimal("0.0");
+            } else if (conta instanceof ContaPoupanca) {
+                return new BigDecimal("0.01");
+            } else {
+                return new BigDecimal("0.015");
+            }
+        }
     }
 
     public BigDecimal calcularTaxa(Conta conta, TipoPessoa tipoPessoa){
 
-        return new BigDecimal(0.005);
-//        if (pessoa instanceof PessoaJuridica)
-//            if (conta instanceof ContaCorrente) {
-//                return new BigDecimal(0.005);
-//            } else if (conta instanceof ContaPoupanca) {
-//                return new BigDecimal(0.0);
-//            } else {
-//                return new BigDecimal(0.005);
-//            }
-//        else {
-//            if (conta instanceof ContaCorrente) {
-//                return new BigDecimal(0.0);
-//            } else if (conta instanceof ContaPoupanca) {
-//                return new BigDecimal(0.01);
-//            } else {
-//                return new BigDecimal(0.0);
-//            }
-//        }
+        if (tipoPessoa == TipoPessoa.JURIDICA) {
+            return new BigDecimal("0.005");
+        } else {
+            return new BigDecimal("0.0");
+        }
     }
 }

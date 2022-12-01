@@ -1,15 +1,10 @@
 package br.com.newbank;
 
-import br.com.newbank.domain.entities.Conta;
-import br.com.newbank.domain.entities.Pessoa;
 import br.com.newbank.domain.enums.TipoConta;
 import br.com.newbank.domain.enums.TipoPessoa;
-import br.com.newbank.services.MovimentarContaService;
-import br.com.newbank.services.ServicosConta;
+import br.com.newbank.services.ListarLancamentoService;
 import br.com.newbank.services.TransferirService;
-import br.com.newbank.services.impl.MovimentarContaServiceImpl;
-import br.com.newbank.services.impl.ServicosContaImpl;
-import br.com.newbank.services.impl.TransferirServiceImpl;
+import br.com.newbank.services.impl.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -66,10 +61,10 @@ public class NewBankApplication {
                 tipo_conta = Integer.parseInt(sc.nextLine());
                 if(validarEntrada(String.valueOf(tipo_conta), new String[]{"1", "2", "3"})){
 
-                    if ((tipo_conta == 2 && tipoPessoa.getTipo_conta() == 2))
+                   if ((tipo_conta == 2 && tipoPessoa.getTipo_conta() == 2))
                         System.out.println("Tipo de conta inválida pra pessoa Juridica");
-                    else
-                       valida = true;
+                   else
+                        valida = true;
                 }
 
             }catch (Exception exception){
@@ -86,30 +81,34 @@ public class NewBankApplication {
             tipoConta = TipoConta.INVESTIMENTO;
 
 
-        ServicosConta servicosConta = new ServicosContaImpl();
+        AbrirContaServiceImpl abrirContaService = new AbrirContaServiceImpl();
+        SacarServiceImpl sacarService = new SacarServiceImpl();
+        DepositarServiceImpl depositarService = new DepositarServiceImpl();
+        ConsultarSaldoServiceImpl consultarSaldoService = new ConsultarSaldoServiceImpl();
+        ListarLancamentoServiceImpl listarLancamentoService = new ListarLancamentoServiceImpl();
+
         TransferirService transferirService = new TransferirServiceImpl();
-        MovimentarContaService movimentarContaService = new MovimentarContaServiceImpl();
-        Conta conta = servicosConta.abrirConta(nome, endereco, tipoPessoa, tipoConta);
-        conta.setTaxa(movimentarContaService.calcularTaxa(conta, tipoPessoa));
-        conta.setTaxaRendimento(movimentarContaService.calcularRendimento(conta, tipoPessoa));
+
+        var conta = abrirContaService.abrirConta(nome, endereco, tipoPessoa, tipoConta);
+
         System.out.println("Conta aberta : " + conta.toString());
 
         int operacao = 0;
         // mensagem pra escolher operacoes da conta
 
-        while (operacao != 7){
+        while (operacao != 6){
             //operacoes na conta
 
             boolean validaEntradaTipoOperacao = false;
 
             while (!validaEntradaTipoOperacao){
 
-                System.out.println("Digite o numero da operação abaixo: \n 1 - DEPOSITO \n 2 - SAQUE \n 3 - INVESTIMENTO \n 4 - SALDO \n 5 - TRANSFERIR \n 6 - LISTAR LANCAMENTOS \n 7 - SAIR");
+                System.out.println("Digite o numero da operação abaixo: \n 1 - DEPOSITO \n 2 - SAQUE \n 3 - SALDO \n 4 - TRANSFERIR \n 5 - LISTAR LANCAMENTOS \n 6 - SAIR");
 
                 try {
                     operacao = Integer.parseInt(sc.nextLine());
 
-                    if(validarEntrada(String.valueOf(operacao), new String[]{"1", "2", "3", "4", "5", "6", "7"})){
+                    if(validarEntrada(String.valueOf(operacao), new String[]{"1", "2", "3", "4", "5", "6"})){
                         validaEntradaTipoOperacao = true;
                     }
 
@@ -130,7 +129,7 @@ public class NewBankApplication {
                         try {
                             System.out.println("Digite o valor do DEPOSITO: ");
                             valor = new BigDecimal(sc.nextLine());
-                            servicosConta.depositar(conta, valor);
+                            depositarService.depositar(conta, valor);
 
                             validaValorOperacao = true;
 
@@ -152,7 +151,7 @@ public class NewBankApplication {
                             System.out.println("Digite o valor do SAQUE: ");
                             valor = new BigDecimal(sc.nextLine());
                             valor = valor.multiply(new BigDecimal(-1));
-                            if(servicosConta.sacar(conta, valor)){
+                            if(sacarService.sacar(conta, valor)){
                                 System.out.println("Saque efetuado");
                             }else{
                                 System.out.println("Sem saldo pro saque");
@@ -169,19 +168,11 @@ public class NewBankApplication {
                     System.out.println("Saldo atual: " + conta.getSaldo());
                     break;
 
-                case 3: // INVESTIR
-                    System.out.println("Digite o valor do INVESTIMENTO: ");
-                    valor = new BigDecimal(sc.nextLine());
-                    servicosConta.investir(conta, valor);
-                    System.out.println("Investimento efetuado");
-                    System.out.println("Saldo atual: " + conta.getSaldo());
+                case 3: // SALDO
+                    System.out.println("Saldo atual: " + consultarSaldoService.consultarSaldo(conta));
                     break;
 
-                case 4: // SALDO
-                    System.out.println("Saldo atual: " + servicosConta.consultarSaldo(conta));
-                    break;
-
-                case 5: // TRANSFERIR
+                case 4: // TRANSFERIR
 
                     while (!validaValorOperacao){
 
@@ -207,12 +198,13 @@ public class NewBankApplication {
 
                     System.out.println("Saldo atual: " + conta.getSaldo());
                     break;
-                case 6: // LANCAMENTOS
-                    System.out.println("Lançamentos: \n"  + servicosConta.listarLancamentos(conta));
+                case 5: // LANCAMENTOS
+                    System.out.println("Lançamentos: \n"  + listarLancamentoService.listarLancamentos(conta));
+                    System.out.println(" Saldo atual: "  + conta.getSaldo() + "\n");
                     break;
 
                 default:
-                    operacao = 7;
+                    operacao = 6;
             }
         }
     }

@@ -1,13 +1,11 @@
 package br.com.newbank.domain.entities;
 
+import br.com.newbank.domain.entities.perfil.Corrente;
+import br.com.newbank.domain.entities.perfil.Poupanca;
+import lombok.Data;
+
 import java.math.BigDecimal;
 
-public class ContaPoupanca extends Conta {
+public class ContaPoupanca extends Conta<Poupanca, PessoaFisica> {
 
-//    public BigDecimal calcularRendimento(Pessoa pessoa){
-//       if (pessoa instanceof PessoaJuridica)
-//            return new BigDecimal (0.0);
-//        else
-//            return new BigDecimal(0.01);
-//    }
 }
